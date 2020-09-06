@@ -7,7 +7,7 @@ class User {
 
   async get (query) {
     const users = await this.db.get(query)
-    return users || []
+    return users
   }
 
   async create (user) {

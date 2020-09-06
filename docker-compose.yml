@@ -3,7 +3,7 @@ version: '3.7'
 services:
     server:
         build: ./server
-        image: users-crud
+        image: users-crud-server-image
         container_name: users-crud-server
         command: npm run start:dev
         volumes:
@@ -12,9 +12,9 @@ services:
         environment: 
             - DB_HOST=db
             - DB_PORT=27017
-            - DB_NAME=$DB_NAME
+            - DB_NAME=users_crud
         ports: 
-            - 3000:3000
+            - 8080:8080
         depends_on: 
             - db
         networks: 

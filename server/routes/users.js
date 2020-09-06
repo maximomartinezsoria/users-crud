@@ -12,8 +12,8 @@ function usersRoutes (app) {
 
   router.get('/', async (req, res, next) => {
     try {
-      const user = await User.get()
-      res.status(200).json(user)
+      const users = await User.get()
+      res.status(200).json(users)
     } catch (error) {
       next(error)
     }
