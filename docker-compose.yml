@@ -1,0 +1,36 @@
+version: '3.7'
+
+services:
+    server:
+        build: ./server
+        image: users-crud
+        container_name: users-crud-server
+        command: npm run start:dev
+        volumes:
+            - ./server/:/usr/src/app
+            - /usr/app/node_modules
+        environment: 
+            - DB_HOST=db
+            - DB_PORT=27017
+            - DB_NAME=$DB_NAME
+        ports: 
+            - 3000:3000
+        depends_on: 
+            - db
+        networks: 
+            - users-crud-network
+    db:
+        image: mongo
+        restart: always
+        ports:
+            - 27100:27017
+        networks: 
+            - users-crud-network
+
+networks:
+    users-crud-network:
+        driver: bridge
+
+volumes:
+    data-volume:
+    node_modules:
