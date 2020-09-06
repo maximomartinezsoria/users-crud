@@ -1,25 +1,21 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import { apiEndpoint } from './config'
-import { onRowAdd, onRowDelete, onRowUpdate } from './utils/tableFunctions'
-import tableIcons from './utils/tableIcons'
-import tableColumns from './utils/tableColumns'
 import Grid from '@material-ui/core/Grid'
-import MaterialTable from 'material-table'
-import Alert from '@material-ui/lab/Alert';
+import Alert from '@material-ui/lab/Alert'
+import { Table } from './components/Table'
+import { store } from './store'
+import { SET_DATA, SET_ERROR_MESSAGES } from './store/actions'
 
 const App = () => {
-  const [data, setData] = useState([])
-  const [error, setError] = useState(false)
-  const [errorMessages, setErrorMessages] = useState([])
+  const { state: {errorMessages}, dispatch } = useContext(store)
 
   const fetchUsers = async () => {
     try {
       const usersResponse = await fetch(`${apiEndpoint}/users`)
       const users = await usersResponse.json()
-      setData(users)
+      dispatch({ type: SET_DATA, payload: users })
     } catch (usersRequestError) {
-      setErrorMessages(["We weren't able to load the user data."])
-      setError(true)
+      dispatch({ type: SET_ERROR_MESSAGES, payload: ["We weren't able to load the user data."] })
     }
   }
 
@@ -29,10 +25,10 @@ const App = () => {
 
   return (
     <main>
-      <Grid container>
-        <Grid item xs={12} xl={8}>
+      <Grid container alignItems="center" justify="center">
+        <Grid item xs={12} md={8}>
           <div>
-            { error && 
+            { !!errorMessages.length && 
               <Alert severity="error">
                   {errorMessages.map((msg, i) => {
                       return <div key={i}>{msg}</div>
@@ -40,13 +36,7 @@ const App = () => {
               </Alert>
             }       
           </div>
-            <MaterialTable
-              title=""
-              columns={tableColumns}
-              data={data}
-              icons={tableIcons}
-              editable={{ onRowUpdate, onRowAdd, onRowDelete }}
-            />
+          <Table />
         </Grid>
       </Grid>
     </main>
